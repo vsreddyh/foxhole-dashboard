@@ -1,0 +1,343 @@
+/* ── Reset ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0a0b0e;
+  --bg-card: #111318;
+  --bg-card2: #181b22;
+  --border: #252932;
+  --border-hi: #353c4a;
+  --accent: #c8a84b;
+  --accent-dim: rgba(200, 168, 75, .15);
+  --accent-hi: #d9bc6a;
+  --red: #e05555;
+  --red-dim: rgba(224, 85, 85, .15);
+  --green: #4caf6e;
+  --green-dim: rgba(76, 175, 110, .15);
+  --blue: #4b8fc8;
+  --blue-dim: rgba(75, 143, 200, .15);
+  --text: #e8eaf0;
+  --text2: #8b909e;
+  --text3: #555c6b;
+  --font: 'Inter', sans-serif;
+  --font-head: 'Rajdhani', sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hi);
+  border-radius: 3px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-head);
+  letter-spacing: .04em;
+}
+
+/* ── card ─────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color .2s;
+}
+
+.card:hover {
+  border-color: var(--border-hi);
+}
+
+/* ── btn ──────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .5rem 1.1rem;
+  border-radius: 6px;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+  font-family: var(--font);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0a0b0e;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hi);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+
+.btn-danger {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid rgba(224, 85, 85, .3);
+}
+
+.btn-danger:hover {
+  background: var(--red);
+  color: #fff;
+}
+
+.btn-sm {
+  padding: .3rem .75rem;
+  font-size: .8rem;
+}
+
+.btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* ── input ────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .5rem .85rem;
+  color: var(--text);
+  font-size: .875rem;
+  outline: none;
+  transition: border-color .15s;
+  font-family: var(--font);
+}
+
+.input:focus {
+  border-color: var(--accent);
+}
+
+.input::placeholder {
+  color: var(--text3);
+}
+
+/* ── badge ────────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .15rem .55rem;
+  border-radius: 4px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.badge-gold {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.badge-green {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.badge-blue {
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.badge-red {
+  background: var(--red-dim);
+  color: var(--red);
+}
+
+.badge-gray {
+  background: rgba(139, 144, 158, .15);
+  color: var(--text2);
+}
+
+/* ── alert bar ────────────────────────────────────────── */
+.alert-bar {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .85rem;
+  border-radius: 6px;
+  font-size: .82rem;
+  margin-bottom: .4rem;
+}
+
+.alert-warn {
+  background: rgba(200, 168, 75, .1);
+  border: 1px solid rgba(200, 168, 75, .25);
+  color: var(--accent);
+}
+
+.alert-danger {
+  background: var(--red-dim);
+  border: 1px solid rgba(224, 85, 85, .3);
+  color: var(--red);
+}
+
+.alert-ok {
+  background: var(--green-dim);
+  border: 1px solid rgba(76, 175, 110, .25);
+  color: var(--green);
+}
+
+/* ── table ────────────────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .875rem;
+}
+
+thead {
+  border-bottom: 1px solid var(--border-hi);
+}
+
+th {
+  color: var(--text3);
+  font-weight: 600;
+  padding: .6rem 1rem;
+  text-align: left;
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+td {
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover td {
+  color: var(--text);
+  background: rgba(255, 255, 255, .02);
+}
+
+/* ── checklist ────────────────────────────────────────── */
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: .875rem;
+}
+
+.cl-item:last-child {
+  border-bottom: none;
+}
+
+.cl-item input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cl-item.done span {
+  text-decoration: line-through;
+  color: var(--text3);
+}
+
+/* ── status ───────────────────────────────────────────── */
+.status-planning {
+  background: var(--blue-dim);
+  color: var(--blue);
+}
+
+.status-active {
+  background: var(--green-dim);
+  color: var(--green);
+}
+
+.status-complete {
+  background: rgba(139, 144, 158, .15);
+  color: var(--text2);
+}
+
+/* ── animations ───────────────────────────────────────── */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-up {
+  animation: fadeUp .22s ease-out both;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid var(--border-hi);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+}
+
+label.field-label {
+  display: block;
+  font-size: .72rem;
+  color: var(--text3);
+  margin-bottom: .3rem;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
