@@ -79,7 +79,6 @@ export default function MissionDetail() {
                             <h3 style={{ margin: '0 0 1rem', fontSize: '1rem' }}>Info</h3>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', color: 'var(--text2)' }}>
                                 <div><span style={{ color: 'var(--text3)', marginRight: '.5rem' }}>Created:</span>{new Date(mission.createdAt).toLocaleDateString()}</div>
-                                <div><span style={{ color: 'var(--text3)', marginRight: '.5rem' }}>Assigned:</span>{mission.assignedTo?.length > 0 ? mission.assignedTo.length + ' members' : 'Unassigned'}</div>
                             </div>
                         </div>
 

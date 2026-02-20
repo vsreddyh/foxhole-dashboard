@@ -41,6 +41,10 @@ router.post('/', requireRole('Admin'), async (req, res) => {
         const user = await User.create({ username, passwordHash, role });
         res.status(201).json(user.toSafeObject());
     } catch (err) {
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            return res.status(400).json({ error: messages.join(', ') });
+        }
         console.error(err);
         res.status(500).json({ error: 'Internal server error.' });
     }

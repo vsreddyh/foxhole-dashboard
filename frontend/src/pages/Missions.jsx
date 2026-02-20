@@ -15,7 +15,6 @@ export default function Missions() {
     const [form, setForm] = useState({ title: '', description: '', status: 'Planning' });
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState('');
-    const [deleteError, setDeleteError] = useState('');
     const [deletingId, setDeletingId] = useState(null);
     const deleteTimer = useRef(null);
 
@@ -42,12 +41,11 @@ export default function Missions() {
         if (deletingId !== id) { armDelete(id); return; }
         clearTimeout(deleteTimer.current);
         setDeletingId(null);
-        setDeleteError('');
         try {
             await api.missions.remove(id);
             setMissions(m => m.filter(x => x._id !== id));
         } catch (err) {
-            setDeleteError(err.message);
+            console.error('Delete failed:', err);
         }
     };
 
@@ -61,7 +59,7 @@ export default function Missions() {
                             <h2 style={{ margin: 0, fontSize: '1.75rem' }}>Missions</h2>
                             <p style={{ margin: 0, color: 'var(--text3)', fontSize: '.875rem' }}>Plan and track regiment operations</p>
                         </div>
-                        {hasRole('Trusted') && <button className="btn btn-primary" onClick={() => setShowForm(s => !s)}>{showForm ? '✕ Cancel' : '+ New Mission'}</button>}
+                        {hasRole('Admin') && <button className="btn btn-primary" onClick={() => setShowForm(s => !s)}>{showForm ? '✕ Cancel' : '+ New Mission'}</button>}
                     </div>
 
                     {showForm && (

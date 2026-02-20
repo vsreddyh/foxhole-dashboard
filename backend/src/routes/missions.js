@@ -31,8 +31,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/missions — Trusted+
-router.post('/', requireRole('Trusted'), async (req, res) => {
+// POST /api/missions — Admin+
+router.post('/', requireRole('Admin'), async (req, res) => {
     try {
         const { title, description, status, checklist, assignedTo } = req.body;
         if (!title) return res.status(400).json({ error: 'Title is required.' });

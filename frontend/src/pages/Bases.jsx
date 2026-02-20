@@ -16,7 +16,6 @@ export default function Bases() {
     const [form, setForm] = useState(EMPTY_FORM);
     const [saving, setSaving] = useState(false);
     const [formError, setFormError] = useState('');
-    const [deleteError, setDeleteError] = useState('');
     const [deletingId, setDeletingId] = useState(null);
     const deleteTimer = useRef(null);
 
@@ -43,7 +42,7 @@ export default function Bases() {
             .then(setMaps)
             .catch(() => setMaps([]))
             .finally(() => setMapsLoading(false));
-    }, [showForm]);
+    }, [showForm, maps.length]);
 
     // Load sub-regions when region changes
     const handleRegionChange = async (mapName) => {
@@ -76,12 +75,11 @@ export default function Bases() {
         if (deletingId !== id) { armDelete(id); return; }
         clearTimeout(deleteTimer.current);
         setDeletingId(null);
-        setDeleteError('');
         try {
             await api.bases.remove(id);
             setBases(b => b.filter(x => x._id !== id));
         } catch (err) {
-            setDeleteError(err.message);
+            console.error('Delete failed:', err);
         }
     };
 
@@ -102,7 +100,7 @@ export default function Bases() {
                             <h2 style={{ margin: 0, fontSize: '1.75rem' }}>Bases</h2>
                             <p style={{ margin: 0, color: 'var(--text3)', fontSize: '.875rem' }}>Manage regiment forward operating bases</p>
                         </div>
-                        {hasRole('Trusted') && <button className="btn btn-primary" onClick={toggleForm}>{showForm ? '✕ Cancel' : '+ New Base'}</button>}
+                        {hasRole('Admin') && <button className="btn btn-primary" onClick={toggleForm}>{showForm ? '✕ Cancel' : '+ New Base'}</button>}
                     </div>
 
                     {showForm && (
@@ -188,7 +186,7 @@ export default function Bases() {
                     ) : (
                         <div className="card fade-up table-wrap" style={{ padding: 0 }}>
                             <table>
-                                <thead><tr><th>Name</th><th>Region</th><th>Sub-Region</th><th>Landmark</th><th>Checklist</th><th>Alerts</th><th /></tr></thead>
+                                <thead><tr><th>Name</th><th>Region</th><th>Sub-Region</th><th>Landmark</th><th>Alerts</th><th /></tr></thead>
                                 <tbody>
                                     {bases.map(b => {
                                         const done = b.checklist?.filter(c => c.done).length ?? 0;
@@ -197,7 +195,6 @@ export default function Bases() {
                                             <tr key={b._id}>
                                                 <td><Link to={`/bases/${b._id}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{b.name}</Link></td>
                                                 <td>{b.region}</td><td>{b.subRegion}</td><td>{b.landmark || '—'}</td>
-                                                <td>{b.checklist?.length > 0 ? `${done}/${b.checklist.length}` : '—'}</td>
                                                 <td>{hasAlerts ? <span className="badge badge-red">⚠ Alert</span> : <span className="badge badge-green">Clear</span>}</td>
                                                 <td style={{ display: 'flex', gap: '.4rem' }}>
                                                     <Link to={`/bases/${b._id}`} className="btn btn-ghost btn-sm">View</Link>

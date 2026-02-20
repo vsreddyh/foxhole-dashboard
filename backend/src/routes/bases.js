@@ -27,8 +27,8 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// POST /api/bases — Trusted+
-router.post('/', requireRole('Trusted'), async (req, res) => {
+// POST /api/bases — Admin+
+router.post('/', requireRole('Admin'), async (req, res) => {
     try {
         const { name, region, regionKey, subRegion, landmark, notes, checklist } = req.body;
         if (!name || !region || !subRegion) {

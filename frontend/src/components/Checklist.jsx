@@ -5,6 +5,7 @@ export default function Checklist({ items = [], onChange, readOnly = false }) {
     const [newText, setNewText] = useState('');
 
     // Sync with parent when it re-fetches after a server round-trip
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { setList(items ?? []); }, [items]);
 
     const update = (updated) => { setList(updated); onChange?.(updated); };
