@@ -31,7 +31,7 @@ export default function Dashboard() {
     const active = missions.filter(m => m.status === 'Active').length;
     const planning = missions.filter(m => m.status === 'Planning').length;
     const complete = missions.filter(m => m.status === 'Complete').length;
-    const alerts = bases.filter(b => b.alerts?.some(a => !a.includes('No active'))).length;
+    const alerts = bases.filter(b => b.alerts?.some(a => a.includes('⚠'))).length;
 
     return (
         <RoleGuard>
@@ -64,7 +64,7 @@ export default function Dashboard() {
                                                 <Link to={`/bases/${b._id}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontSize: '.875rem' }}>{b.name}</Link>
                                                 <div style={{ fontSize: '.75rem', color: 'var(--text3)' }}>{b.region} › {b.subRegion}</div>
                                             </div>
-                                            {b.alerts?.some(a => !a.includes('No active')) && <span className="badge badge-red">Alert</span>}
+                                            {b.alerts?.some(a => a.includes('⚠')) && <span className="badge badge-red">Alert</span>}
                                         </div>
                                     ))}
                         </div>
