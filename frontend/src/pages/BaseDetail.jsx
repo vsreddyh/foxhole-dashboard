@@ -16,6 +16,8 @@ export default function BaseDetail() {
     const [alertLoading, setAlertLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [editingNotes, setEditingNotes] = useState(false);
+    const [editNotesValue, setEditNotesValue] = useState('');
 
     useEffect(() => { api.bases.get(id).then(setBase).finally(() => setLoading(false)); }, [id]);
 
@@ -110,10 +112,48 @@ export default function BaseDetail() {
                             )}
                         </div>
 
-                        {base.notes && (
+                        {(base.notes || hasRole('Trusted')) && (
                             <div className="card fade-up" style={{ gridColumn: '1/-1' }}>
-                                <h3 style={{ margin: '0 0 .75rem', fontSize: '1rem' }}>Notes</h3>
-                                <p style={{ color: 'var(--text2)', fontSize: '.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>{base.notes}</p>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '.75rem' }}>
+                                    <h3 style={{ margin: 0, fontSize: '1rem' }}>Notes</h3>
+                                    {hasRole('Trusted') && !editingNotes && (
+                                        <button className="btn btn-ghost btn-sm" onClick={() => { setEditNotesValue(base.notes || ''); setEditingNotes(true); }}>
+                                            Edit Notes
+                                        </button>
+                                    )}
+                                </div>
+                                {editingNotes ? (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                                        <textarea
+                                            className="input"
+                                            rows={4}
+                                            value={editNotesValue}
+                                            onChange={e => setEditNotesValue(e.target.value)}
+                                            style={{ resize: 'vertical' }}
+                                        />
+                                        <div style={{ display: 'flex', gap: '.5rem' }}>
+                                            <button
+                                                className="btn btn-primary btn-sm"
+                                                onClick={async () => {
+                                                    setSaving(true);
+                                                    try {
+                                                        const r = await api.bases.update(id, { notes: editNotesValue });
+                                                        setBase(r);
+                                                        setEditingNotes(false);
+                                                    } finally {
+                                                        setSaving(false);
+                                                    }
+                                                }}
+                                                disabled={saving}
+                                            >
+                                                {saving ? 'Saving…' : 'Save'}
+                                            </button>
+                                            <button className="btn btn-ghost btn-sm" onClick={() => setEditingNotes(false)} disabled={saving}>Cancel</button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p style={{ color: 'var(--text2)', fontSize: '.875rem', margin: 0, whiteSpace: 'pre-wrap' }}>{base.notes || <span style={{ color: 'var(--text3)' }}>No notes provided.</span>}</p>
+                                )}
                             </div>
                         )}
                     </div>

@@ -17,6 +17,8 @@ export default function MissionDetail() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const [editingDesc, setEditingDesc] = useState(false);
+    const [editDescValue, setEditDescValue] = useState('');
 
     useEffect(() => { api.missions.get(id).then(setMission).finally(() => setLoading(false)); }, [id]);
 
@@ -43,9 +45,50 @@ export default function MissionDetail() {
                 <Sidebar />
                 <main style={{ flex: 1, padding: '2rem', overflowY: 'auto' }}>
                     <div className="fade-up" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <div>
-                            <h2 style={{ margin: '0 0 .25rem', fontSize: '1.75rem' }}>{mission.title}</h2>
-                            {mission.description && <p style={{ margin: 0, color: 'var(--text3)', fontSize: '.875rem', maxWidth: 500 }}>{mission.description}</p>}
+                        <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', margin: '0 0 .25rem' }}>
+                                <h2 style={{ margin: 0, fontSize: '1.75rem' }}>{mission.title}</h2>
+                                {hasRole('Trusted') && !editingDesc && (
+                                    <button className="btn btn-ghost btn-sm" onClick={() => { setEditDescValue(mission.description || ''); setEditingDesc(true); }}>Edit Description</button>
+                                )}
+                            </div>
+                            {editingDesc ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem', maxWidth: 500, marginTop: '.5rem' }}>
+                                    <textarea
+                                        className="input"
+                                        rows={4}
+                                        value={editDescValue}
+                                        onChange={e => setEditDescValue(e.target.value)}
+                                        style={{ resize: 'vertical' }}
+                                        placeholder="Enter mission description..."
+                                    />
+                                    <div style={{ display: 'flex', gap: '.5rem' }}>
+                                        <button
+                                            className="btn btn-primary btn-sm"
+                                            onClick={async () => {
+                                                setSaving(true);
+                                                try {
+                                                    const r = await api.missions.update(id, { description: editDescValue });
+                                                    setMission(r);
+                                                    setEditingDesc(false);
+                                                } finally {
+                                                    setSaving(false);
+                                                }
+                                            }}
+                                            disabled={saving}
+                                        >
+                                            {saving ? 'Saving…' : 'Save'}
+                                        </button>
+                                        <button className="btn btn-ghost btn-sm" onClick={() => setEditingDesc(false)} disabled={saving}>Cancel</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                (mission.description || hasRole('Trusted')) && (
+                                    <p style={{ margin: 0, color: 'var(--text3)', fontSize: '.875rem', maxWidth: 500, whiteSpace: 'pre-wrap' }}>
+                                        {mission.description || <span style={{ fontStyle: 'italic' }}>No description provided.</span>}
+                                    </p>
+                                )
+                            )}
                         </div>
                         <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
                             {saving && <span style={{ color: 'var(--text3)', fontSize: '.8rem' }}>Saving…</span>}
