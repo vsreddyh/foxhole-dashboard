@@ -24,16 +24,29 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(401).json({ error: 'Invalid credentials.' });
 
         const token = signToken(user._id);
-        res.json({ token, user: user.toSafeObject() });
+        req.session.userId = user._id; // Initialize MongoDB session
+
+        // Save session explicitly before responding (good practice to avoid race conditions)
+        req.session.save((err) => {
+            if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ error: 'Failed to create session' });
+            }
+            res.json({ token, user: user.toSafeObject() });
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
-// POST /api/auth/logout — stateless JWT; client just drops the token
+// POST /api/auth/logout — destroy session and instruct client to drop token
 router.post('/logout', (req, res) => {
-    res.json({ message: 'Logged out.' });
+    req.session.destroy((err) => {
+        if (err) console.error('Session destroy error:', err);
+        res.clearCookie('connect.sid'); // Clear the session cookie
+        res.json({ message: 'Logged out.' });
+    });
 });
 
 // GET /api/auth/me

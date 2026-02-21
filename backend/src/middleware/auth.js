@@ -2,10 +2,20 @@ const jwt = require('jsonwebtoken');
 const { User, ROLES } = require('../models/User');
 
 /**
- * Attach req.user if a valid JWT is present.
+ * Attach req.user if a valid JWT or a valid Session is present.
  */
 async function authenticate(req, res, next) {
     try {
+        // 1. Try Session Authentication First
+        if (req.session && req.session.userId) {
+            const user = await User.findById(req.session.userId).lean();
+            if (user) {
+                req.user = user;
+                return next();
+            }
+        }
+
+        // 2. Fallback to JWT Authentication (Backward Compatibility / Mobile)
         const authHeader = req.headers.authorization;
         const token = authHeader && authHeader.startsWith('Bearer ')
             ? authHeader.slice(7)

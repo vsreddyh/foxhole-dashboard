@@ -28,7 +28,32 @@ app.use(cors({
     },
     credentials: true,
 }));
+const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
+
 app.use(express.json());
+
+// Session Configuration
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET || 'foxhole_super_secret_fallback',
+        resave: false,
+        saveUninitialized: false,
+        store: process.env.NODE_ENV === 'test'
+            ? undefined
+            : MongoStore.create({
+                mongoUrl: process.env.MONGO_URI,
+                collectionName: 'sessions',
+                ttl: 7 * 24 * 60 * 60 // 7 days (aligning with JWT expiration)
+            }),
+        cookie: {
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax' // Required for cross-site cookies if frontend/backend domains differ
+        }
+    })
+);
 
 // Rate limiting
 const limiter = rateLimit({
@@ -50,15 +75,17 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
 
-mongoose
-    .connect(process.env.MONGO_URI)
-    .then(() => {
-        console.log('✅ Connected to MongoDB');
-        app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
-    })
-    .catch((err) => {
-        console.error('❌ MongoDB connection error:', err);
-        process.exit(1);
-    });
+if (process.env.NODE_ENV !== 'test') {
+    mongoose
+        .connect(process.env.MONGO_URI)
+        .then(() => {
+            console.log('✅ Connected to MongoDB');
+            app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+        })
+        .catch((err) => {
+            console.error('❌ MongoDB connection error:', err);
+            process.exit(1);
+        });
+}
 
 module.exports = app; // for tests
