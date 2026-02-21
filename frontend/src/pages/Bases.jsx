@@ -190,7 +190,7 @@ export default function Bases() {
                                 <tbody>
                                     {bases.map(b => {
                                         const done = b.checklist?.filter(c => c.done).length ?? 0;
-                                        const hasAlerts = b.alerts?.some(a => !a.includes('No active'));
+                                        const hasAlerts = b.alerts?.some(a => a.includes('⚠'));
                                         return (
                                             <tr key={b._id}>
                                                 <td><Link to={`/bases/${b._id}`} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{b.name}</Link></td>
